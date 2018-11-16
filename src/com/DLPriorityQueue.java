@@ -28,17 +28,15 @@ public class DLPriorityQueue<K extends Comparable, V> implements VCPriorityQueue
     @Override
     public Entry<K, V> enqueue(K key, V value) throws IllegalArgumentException {
         Entry<K, V> newEntry = new Entry<>(key, value);
-        Entry<K, V> tmp;
         if (this.queue != null) {
-            for (Entry<K, V> entry : queue) {
-                if (entry.getKey().compareTo(newEntry.getKey()) > 0) {
-                    tmp = entry;
-                    entry = newEntry;
-                    newEntry = tmp;
+            for(int i = 0; i < queue.size(); i++) {
+                if(newEntry.getKey().compareTo(queue.get(i).getKey()) < 0) {
+                    queue.add(i, newEntry);
                 }
             }
+        }else {
+            queue.add(newEntry);
         }
-        queue.add(newEntry);
         return newEntry;
     }
 
