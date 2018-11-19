@@ -1,12 +1,6 @@
-package com;
+package com.company;
 
-import com.ALPriorityQueue;
-import com.Entry;
-import com.VCPriorityQueue;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class DLPriorityQueue<K extends Comparable, V> implements VCPriorityQueue<K, V> {
     private LinkedList<Entry<K, V>> queue;
@@ -29,11 +23,13 @@ public class DLPriorityQueue<K extends Comparable, V> implements VCPriorityQueue
     public Entry<K, V> enqueue(K key, V value) throws IllegalArgumentException {
         Entry<K, V> newEntry = new Entry<>(key, value);
         if (this.queue != null) {
-            for(int i = 0; i < queue.size(); i++) {
-                if(newEntry.getKey().compareTo(queue.get(i).getKey()) < 0) {
-                    queue.add(i, newEntry);
+            queue.add(newEntry);
+            Collections.sort(queue, new Comparator<Entry<K, V>>() {
+                @Override
+                public int compare(Entry<K, V> e1, Entry<K, V> e2) {
+                    return e1.getKey().compareTo(e2.getKey());
                 }
-            }
+            });
         }else {
             queue.add(newEntry);
         }

@@ -1,4 +1,4 @@
-package com;
+package com.company;
 
 /**
  * Interface for the priority queue ADT(Abstract Data Type).

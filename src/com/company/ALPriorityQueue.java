@@ -1,7 +1,4 @@
-package com;
-
-import com.Entry;
-import com.VCPriorityQueue;
+package com.company;
 
 import java.util.ArrayList;
 import java.util.List;

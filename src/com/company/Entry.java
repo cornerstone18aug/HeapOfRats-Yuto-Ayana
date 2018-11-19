@@ -1,4 +1,4 @@
-package com;
+package com.company;
 
 /**
  * Class for the Entry element of VCPriorityQueue
