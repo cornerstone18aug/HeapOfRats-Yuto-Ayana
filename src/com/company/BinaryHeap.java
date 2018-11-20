@@ -1,51 +1,53 @@
 package com.company;
 
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import javax.management.openmbean.InvalidKeyException;
 
 public class BinaryHeap<K extends Comparable, V> implements VCPriorityQueue<K,V> {
 
-  private int queue = 10;
+  private int queue = 100;
   private int size;
-  private K[]array;
+//  private K[] array;
+  private List<Entry<K, V>>[] list;
 
-  private int leftChildIndex(int parentIndex) {return 2 * parentIndex + 1;}
-  private int rightChildIndex(int parentIndex) {return 2 * parentIndex + 2;}
+  private int leftChildIndex(int parentIndex) {return 2 * parentIndex;}
+  private int rightChildIndex(int parentIndex) {return 2 * parentIndex + 1;}
   private int parentIndex(int childIndex) {return (childIndex - 1) / 2;}
-  private K parent(int i) {return array[parentIndex(i)];}
+  private List<Entry<K, V>> parent(int i) {return list[parentIndex(i)];}
 
   private boolean hasLeftChild(int index) {return leftChildIndex(index) < size;}
   private boolean hasRightChild(int index) {return rightChildIndex(index) < size;}
   private boolean hasParent(int index) {return parentIndex(index) >= 0;}
 
   public BinaryHeap() {
-    array = (K[]) new Comparator[queue];
+    list = (List<Entry<K, V>>[]) new Comparator[queue];
     size = 0;
   }
 
-  public void add(K value) {
-    array[size] = value;
+  public void add(List<Entry<K, V>> value) {
+    list[size] = value;
     size++;
     heapifyUp();
   }
 
-  public K remove() {
-    if(size == 0) throw new IllegalStateException();
-    K value = array[0];
-    array[0] = array[size - 1];
-    size--;
-    heapifyDown();
-    return value;
-  }
+//  public K remove() {
+//    if(size == 0) throw new IllegalStateException();
+//    List<Entry<K, V>> value = list[0];
+//    list[0] = list[size - 1];
+//    size--;
+//    heapifyDown();
+//    return (K) value;
+//  }
 
   public void heapifyUp(){
     int index = size - 1;
-    while(hasParent(index) && (parent(index).compareTo(array[index]) > 0)) {
+    while(hasParent(index) && (parent(index).get(index).getKey().compareTo(list[index].get(index).getKey()) > 0)) {
       swap(index,parentIndex(index));
       index = parentIndex(index);
     }
-
   }
 
   public void heapifyDown(){
@@ -55,11 +57,11 @@ public class BinaryHeap<K extends Comparable, V> implements VCPriorityQueue<K,V>
       int smallerChild = leftChildIndex(index);
 
       if(hasRightChild(index)
-          && (array[leftChildIndex(index)].compareTo(array[rightChildIndex(index)]) > 0)) {
+          && (list[leftChildIndex(index)].get(index).getKey().compareTo(list[rightChildIndex(index)].get(index).getKey()) > 0)) {
         smallerChild = rightChildIndex(index);
       }
 
-      if(array[index].compareTo(array[smallerChild]) > 0) {
+      if(list[index].get(index).getKey().compareTo(list[smallerChild].get(index).getKey()) > 0) {
         swap(index, smallerChild);
       } else {
         break;
@@ -69,9 +71,9 @@ public class BinaryHeap<K extends Comparable, V> implements VCPriorityQueue<K,V>
   }
 
   private void swap(int indexOne, int indexTwo) {
-    K temp = array[indexOne];
-    array[indexOne] = array[indexTwo];
-    array[indexTwo] = temp;
+    List<Entry<K, V>> temp = list[indexOne];
+    list[indexOne] = list[indexTwo];
+    list[indexTwo] = temp;
   }
 
 
@@ -87,7 +89,10 @@ public class BinaryHeap<K extends Comparable, V> implements VCPriorityQueue<K,V>
 
   @Override
   public Entry<K, V> enqueue(K key, V value) throws IllegalArgumentException {
-    return null;
+    Entry<K, V> newEntry = new Entry<>(key, value);
+    heapifyUp();
+    heapifyDown();
+    return newEntry;
   }
 
   @Override
@@ -95,12 +100,29 @@ public class BinaryHeap<K extends Comparable, V> implements VCPriorityQueue<K,V>
     if(this.isEmpty()) {
       throw new InvalidKeyException();
     }
-    return null; // need to fix
+    Entry<K, V> min = list[0].get(0);
+    return min;
   }
 
   @Override
   public Entry<K, V> dequeueMin() {
-    return null;
+    int index = 1;
+    while(hasLeftChild(index)) {
+      int smallerChild = leftChildIndex(index);
+
+      if(hasRightChild(index)
+              && (list[leftChildIndex(index)].get(index).getKey().compareTo(list[rightChildIndex(index)].get(index).getKey()) > 0)) {
+        smallerChild = rightChildIndex(index);
+      }
+
+      swap(parentIndex(smallerChild), smallerChild);
+
+      index = smallerChild;
+    }
+
+    List<Entry<K, V>> arrayList = new ArrayList<>();
+
+    return arrayList.remove(0);
   }
 
   @Override
